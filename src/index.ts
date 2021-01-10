@@ -5,12 +5,12 @@ import { processHeaders } from "./helpers/header";
 import { xhr } from "./xhr";
 
 function axios(config: AxiosRequestConfig) {
-    xhr({
-        ...config,
-        url: buildURL(config.url, config.params),
-        data: transformRequest(config.data),
-        headers: processHeaders(config.headers, config.data),
-    });
+  return xhr({
+    ...config,
+    url: buildURL(config.url, config.params),
+    data: transformRequest(config.data),
+    headers: processHeaders(config.headers, config.data)
+  });
 }
 
 export default axios;

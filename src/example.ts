@@ -76,10 +76,12 @@ import axios from "./index";
 // })
 
 axios({
-    method: "post",
-    url: "/api/post",
-    data: {
-        a: 1,
-        b: 2,
-    },
-});
+  method: "post",
+  url: "/api/post",
+  data: {
+    a: 1,
+    b: 2
+  },
+  responseType: "json",
+  timeout: 2000
+}).then(data => console.log(data));
