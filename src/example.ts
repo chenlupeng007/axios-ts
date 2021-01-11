@@ -1,4 +1,5 @@
-import axios from "./index";
+import axios, { AxiosError } from "./index";
+import { AxiosPromise } from "./types";
 
 // axios({
 //     method: "get",
@@ -75,13 +76,16 @@ import axios from "./index";
 //   data: new Int32Array([21, 31])
 // })
 
+// axios({
+//   method: "get",
+//   url: "/api/error",
+//   timeout: 3500
+// })
+//   .then(data => console.log(data))
+//   .catch(e => console.log(e));
 axios({
-  method: "post",
-  url: "/api/post",
-  data: {
-    a: 1,
-    b: 2
-  },
-  responseType: "json",
-  timeout: 2000
-}).then(data => console.log(data));
+  method: "get",
+  url: "/api/statusError"
+})
+  .then(data => console.log(data))
+  .catch((e: AxiosError) => console.log(e.response));

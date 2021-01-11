@@ -31,6 +31,18 @@ router
   })
   .post("/post", async ctx => {
     ctx.body = ctx.request.body;
+  })
+  .get("/error", async ctx => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        ctx.body = "success";
+        resolve();
+      }, 3000);
+    });
+  })
+  .get("/statusError", async ctx => {
+    ctx.response.status = 500;
+    ctx.res.end();
   });
 
 app.use(BodyParser());

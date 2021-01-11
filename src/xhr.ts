@@ -1,5 +1,6 @@
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "./types";
 import { parseHeaders } from "./helpers/header";
+import { createError } from "./helpers/error";
 
 export const xhr = (config: AxiosRequestConfig): AxiosPromise =>
   new Promise((resolve, reject) => {
@@ -9,7 +10,7 @@ export const xhr = (config: AxiosRequestConfig): AxiosPromise =>
     request.timeout = config.timeout ?? request.timeout;
 
     request.onreadystatechange = function handleLoad() {
-      if (request.readyState !== 4) {
+      if (request.readyState !== 4 || request.status === 0) {
         return;
       }
 
@@ -30,11 +31,18 @@ export const xhr = (config: AxiosRequestConfig): AxiosPromise =>
     };
 
     request.onerror = function handleError() {
-      reject(new Error("Network Error"));
+      reject(createError("Network Error", config, undefined, request));
     };
 
     request.ontimeout = function handleTimeout() {
-      reject(new Error(`Timeout of ${config.timeout} ms exceeded`));
+      reject(
+        createError(
+          `Timeout of ${config.timeout} ms exceeded`,
+          config,
+          "ECONNABORTED",
+          request
+        )
+      );
     };
 
     request.open(method.toUpperCase(), url);
@@ -48,7 +56,15 @@ export const xhr = (config: AxiosRequestConfig): AxiosPromise =>
       if (response.status >= 200 && response.status < 300) {
         resolve(response);
       } else {
-        reject(new Error(`Request failed with status code ${response.status}`));
+        reject(
+          createError(
+            `Request failed with status code ${response.status}`,
+            config,
+            undefined,
+            request,
+            response
+          )
+        );
       }
     }
   });
